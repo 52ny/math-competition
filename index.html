@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数竞工坊 · 大学生数学竞赛真题备考</title>
+<meta name="description" content="中国大学生数学竞赛（CMC）非数学类与数学类历年真题练习：逐题作答、分步解析、AI 卡壳诊断、知识点与真题分层讲解。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233f51b5'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E%E2%88%91%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="md-header">
+  <div class="header-inner">
+    <button class="icon-btn menu-btn" id="menu-toggle" aria-label="打开目录">☰</button>
+    <a class="brand" href="#/home">
+      <span class="brand-mark">∑</span>
+      <span class="brand-text">数竞工坊</span>
+      <span class="brand-sub">CMC 真题备考</span>
+    </a>
+    <nav class="tabs" id="tabs">
+      <a href="#/home" data-tab="home">首页</a>
+      <a href="#/nm" data-tab="nm">非数学类</a>
+      <a href="#/math" data-tab="math">数学类</a>
+      <a href="#/papers" data-tab="papers">真题库</a>
+      <a href="#/tools" data-tab="tools">学习工具</a>
+    </nav>
+    <div class="header-actions">
+      <button class="search-trigger" id="search-open">搜索题目<span class="kbd">/</span></button>
+      <button class="icon-btn" id="theme-toggle" aria-label="切换主题">◐</button>
+    </div>
+  </div>
+</header>
+
+<div class="search-overlay" id="search-overlay" hidden>
+  <div class="search-panel">
+    <div class="search-row">
+      <input id="search-input" type="search" placeholder="搜索题目、知识点，例如：格林公式 / 2024 / 压缩映射" autocomplete="off">
+      <button class="icon-btn" id="search-close" aria-label="关闭搜索">✕</button>
+    </div>
+    <div class="search-results" id="search-results">
+      <p class="search-hint">输入关键词开始搜索；回车打开第一条结果。</p>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="content" id="content">
+    <div class="loading">正在加载站内数据…</div>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+
+<footer class="site-footer">
+  <div>
+    <strong>数竞工坊</strong> · 中国大学生数学竞赛（CMC）备考站
+  </div>
+  <div class="footer-note">
+    真题题干与参考解答整理自全国大学生数学竞赛官方网站公开试卷（cmathc.cn），仅供学习使用；AI 分析由第三方模型生成，可能与官方解答不一致，请以教材与官方答案为准。
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="assets/vendor/katex/katex.min.js"></script>
+<script src="assets/vendor/katex/auto-render.min.js"></script>
+<script src="assets/js/knowledge.js"></script>
+<script src="assets/js/data-nonmath.js"></script>
+<script src="assets/js/data-math.js"></script>
+<script src="assets/js/ai.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
