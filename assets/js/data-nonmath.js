@@ -1033,5 +1033,22 @@ window.CMC_QUESTIONS_NM = [
     pitfalls: ['直接对连续函数用 AM–GM 而不说明离散逼近。', '不等号方向写反（$@ln$ 递增，$@ln$ 平均 ≤ $@ln$ 平均）。'],
     takeaway: '积分的对数不等式 = 黎曼和 + AM–GM + 极限；这是 Jensen 不等式的初等证明。',
     knowledge: ['k-inequality', 'k-int-techniques']
+  },
+  {
+    id: 'nm2018-10', group: 'nm', edition: 10, year: 2018, stage: '初赛', paper: '非数学类',
+    topic: 'series', type: 'solution', score: 14, difficulty: 5,
+    stem: `已知 $@left@{a_k@right@}$、$@left@{b_k@right@}$ 是正项数列，且 $b_{k+1}-b_k@ge@delta>0$（$@delta$ 为常数）。证明：若级数 $@sum_{k=1}^{+@infty}a_k$ 收敛，则级数 $$@sum_{k=1}^{+@infty}@frac{k@sqrt[k]{(a_1a_2@cdots a_k)(b_1b_2@cdots b_k)}}{b_{k+1}b_k}$$ 收敛。`,
+    answer: `见解析（Abel 分部求和 + AM–GM）`,
+    accept: [],
+    solution: [
+      `记 $S_k=@sum_{i=1}^{k}a_ib_i$，$S_0=0$，则 $a_k=(S_k-S_{k-1})/b_k$。`,
+      `分部求和：$$@sum_{k=1}^{N}a_k=@sum_{k=1}^{N-1}@frac{b_{k+1}-b_k}{b_kb_{k+1}}S_k+@frac{S_N}{b_N}@ge@delta@sum_{k=1}^{N-1}@frac{S_k}{b_kb_{k+1}}.$$`,
+      `$@sum a_k$ 收敛 ⇒ 左边部分和有界 ⇒ $@sum@frac{S_k}{b_kb_{k+1}}$ 收敛。`,
+      `AM–GM：$@sqrt[k]{(a_1@cdots a_k)(b_1@cdots b_k)}@le@frac{a_1b_1+@cdots+a_kb_k}{k}=@frac{S_k}{k}$，故目标级数 $@le@sum@frac{S_k}{b_kb_{k+1}}$，收敛。`
+    ],
+    hints: [`把 $a_k$ 用 $S_k=@sum a_ib_i$ 的差分表示。`, `对 $@sum a_k$ 做 Abel 分部求和，利用 $b_{k+1}-b_k@ge@delta$。`, `对 $k$ 个乘积用 AM–GM 放缩到 $S_k/k$。`],
+    pitfalls: [`直接比较 $a_k$ 与目标通项，阶不匹配。`, `AM–GM 用错组数（应是 $k$ 项）。`],
+    takeaway: `“$b_k$ 单调递增 + $@sum a_k$ 收敛”型题目：设 $S_k=@sum a_ib_i$ 做分部求和，再用 AM–GM 把几何平均压到算术平均。`,
+    knowledge: ['k-series-tests', 'k-inequality']
   }
 ];
