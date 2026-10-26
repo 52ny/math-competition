@@ -556,9 +556,13 @@
     var chips = [['all', '全部'], ['nm', '非数学类'], ['math', '数学类']].map(function (c) {
       return '<button class="chip ' + (f === c[0] ? 'on' : '') + '" data-act="method-filter" data-val="' + c[0] + '">' + c[1] + '</button>';
     }).join('');
+    var covered = {};
+    METHODS.forEach(function (m) { (m.knowledge || []).forEach(function (k) { covered[k] = 1; }); });
+    var kpIds = KP.filter(function (k) { return relatedQuestions(k.id).length; }).map(function (k) { return k.id; });
+    var coverCount = kpIds.filter(function (id) { return covered[id]; }).length;
     var html = pageHead('METHODS', '方法手册', '按“同一个方法”把真题聚在一起：先看适用信号，再看母题的推导骨架，最后跳到同类真题。',
       '<a href="#/home">首页</a> / 方法手册') +
-      '<div class="filter-bar">' + chips + '<span class="small muted">共 ' + list.length + ' 个方法</span></div>' +
+      '<div class="filter-bar">' + chips + '<span class="small muted">共 ' + list.length + ' 个方法 · 覆盖 ' + coverCount + '/' + kpIds.length + ' 个有真题的知识点</span></div>' +
       '<div class="grid grid-2">' + list.map(function (m) {
         var qs = questionsOfMethod(m);
         return '<a class="card card-link" href="#/methods/' + m.id + '">' +

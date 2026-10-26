@@ -303,5 +303,200 @@ window.CMC_METHODS = [
     },
     pitfalls: ['只写“凸函数当然连续”。', '没有用到区域是开的，取不到小方形。'],
     knowledge: ['k-convex']
+  },
+  {
+    id: 'm-polar', group: 'nm', title: '重积分的坐标选择',
+    signal: '区域是圆、环、球、柱，或被积函数含 $x^2+y^2$。',
+    prototype: {
+      stem: '$D:x^2+y^2@le@pi$，求 $@iint_D(@sin x^2@cos y^2+x@sqrt{x^2+y^2})dxdy$',
+      steps: [
+        '先看奇偶性：$x@sqrt{x^2+y^2}$ 关于 $x$ 为奇函数，积分为 0。',
+        '轮换对称：$I=@iint@sin y^2@cos x^2$，相加得 $2I=@iint@sin(x^2+y^2)$。',
+        '极坐标 $dxdy=@rho@,d@rho@,d@theta$，得 $I=@pi$。'
+      ],
+      answer: '$@pi$'
+    },
+    pitfalls: ['极坐标漏写 $@rho$。', '球心不在原点时忘记先平移。'],
+    knowledge: ['k-double-integral', 'k-triple-integral', 'k-symmetry']
+  },
+  {
+    id: 'm-chain', group: 'nm', title: '复合函数与隐函数求导',
+    signal: '抽象函数 $f(u,v)$、隐函数 $F(x,y,z)=0$、方向导数。',
+    prototype: {
+      stem: '$z=f(xy,@,e^{x+y})$，求 $z_{xy}$',
+      steps: [
+        '先写 $z_x=yf_1+e^{x+y}f_2$。',
+        '再对 $y$ 求导，$f_1,f_2$ 仍是复合函数，各乘一次内层导数。',
+        '合并 $f_{12}=f_{21}$：$z_{xy}=xyf_{11}+(x+y)e^{x+y}f_{12}+e^{2(x+y)}f_{22}+f_1+e^{x+y}f_2$。'
+      ],
+      answer: '$xyf_{11}+(x+y)e^{x+y}f_{12}+e^{2(x+y)}f_{22}+f_1+e^{x+y}f_2$'
+    },
+    pitfalls: ['把 $f_1$ 当常数，漏掉它自身的偏导。', '隐函数求导忘记 $z$ 也依赖 $x,y$。'],
+    knowledge: ['k-multi-chain']
+  },
+  {
+    id: 'm-shape', group: 'nm', title: '函数性态：单调、极值与切线',
+    signal: '求最值、判断单调、求切线/法线。',
+    prototype: {
+      stem: '$f(x)=@frac{1}{@ln(1+x)}-@frac1x$，求 $[0,1]$ 上的最小值与最大值',
+      steps: [
+        '先通分求 $x@to0^+$ 的极限得 $f(0)=@frac12$。',
+        '求导后把分子记为 $g(x)=(1+x)@ln^2(1+x)-x^2$，再对 $g$ 求导。',
+        '由 $g\'\'<0$ 得 $g\'<0$、$g<0$，故 $f\'<0$，最小在 $x=1$，最大在 $x=0$。'
+      ],
+      answer: '$@lambda=@frac1{@ln2}-1$，$@mu=@frac12$'
+    },
+    pitfalls: ['只算驻点不看端点。', '导数符号判断时忽略分母恒正。'],
+    knowledge: ['k-derivative-toolkit']
+  },
+  {
+    id: 'm-sequence', group: 'nm', title: '递推数列：单调有界',
+    signal: '$x_{n+1}=f(x_n)$，要求证明收敛并求极限。',
+    prototype: {
+      stem: '$x_1=2021$，$x_n^2-2(x_n+1)x_{n+1}+2021=0$，求 $@lim x_n$',
+      steps: [
+        '解出递推并令 $y_n=1+x_n$，得 $y_{n+1}=@frac{y_n}2+@frac{1011}{y_n}$。',
+        '均值不等式给下界 $@sqrt{2022}$；$f(x)-x=@frac{2022-x^2}{2x}<0$ 给单调递减。',
+        '单调有界 ⇒ 收敛，设极限 $A$ 解 $A=@frac A2+@frac{1011}A$，得 $x_n@to@sqrt{2022}-1$。'
+      ],
+      answer: '$@sqrt{2022}-1$'
+    },
+    pitfalls: ['只算不动点就断言收敛。', '忘记验证数列始终大于下界。'],
+    knowledge: ['k-sequence-monotone']
+  },
+  {
+    id: 'm-power-series', group: 'nm', title: '幂级数：收敛域与求和',
+    signal: '$@sum a_nx^n$、端点敛散、逐项求导/积分求和。',
+    prototype: {
+      stem: '$@sum_{n=1}^{@infty}[1-n@ln(1+@frac1n)]x^n$ 的收敛域',
+      steps: [
+        '等价估计 $a_n@sim@frac1{2n}$，得 $R=1$。',
+        '$x=1$ 时与调和级数同阶，发散。',
+        '$x=-1$ 时构造 $f(x)=x@ln(1+@frac1x)$ 证 $a_n$ 单调递减，Leibniz 收敛，故收敛域 $[-1,1)$。'
+      ],
+      answer: '$[-1,1)$'
+    },
+    pitfalls: ['只写 $R=1$ 就当成 $(-1,1)$。', '端点不代入直接下结论。'],
+    knowledge: ['k-power-series']
+  },
+  {
+    id: 'm-line-plane', group: 'nm', title: '空间直线、平面与投影',
+    signal: '投影、对称点、平面束、两平面交线。',
+    prototype: {
+      stem: '$L:@frac{x-1}1=@frac y1=@frac{z-1}{-1}$ 在 $@pi:x-y+2z-1=0$ 上的投影方向',
+      steps: [
+        '把 $L$ 写成一般式 $x-y-1=0$、$y+z-1=0$，设平面束 $x-y-1+@lambda(y+z-1)=0$。',
+        '与 $@pi$ 垂直：$(1,@lambda-1,@lambda)@cdot(1,-1,2)=0$，得 $@lambda=-2$。',
+        '交线方向为两法向量叉积 $(-8,-4,2)@parallel(-4,-2,1)$，单位化。'
+      ],
+      answer: '$@pm@frac1{@sqrt{21}}(-4,-2,1)$'
+    },
+    pitfalls: ['把直线方向当成平面法向量。', '单位方向向量漏掉正负号。'],
+    knowledge: ['k-lines-planes']
+  },
+  {
+    id: 'm-quadratic', group: 'nm', title: '二次曲面与正交变换',
+    signal: '二次型化标准形、判断曲面类型。',
+    prototype: {
+      stem: '$x^2-2y^2-2z^2-4xy+4xz+8yz=27$',
+      steps: [
+        '写二次型矩阵，求特征值 $2,2,-7$。',
+        '二重特征值的特征向量 Schmidt 正交化，拼成正交矩阵 $Q$。',
+        '标准形 $2x\'^2+2y\'^2-7z\'^2=27$，两正一负 ⇒ 单叶双曲面。'
+      ],
+      answer: '单叶双曲面'
+    },
+    pitfalls: ['特征向量未正交化就拼 $Q$。', '只化标准形不说明曲面类型。'],
+    knowledge: ['k-quadratic-surface']
+  },
+  {
+    id: 'm-arc', group: 'nm', title: '弧长、旋转体与几何建模',
+    signal: '弧长、旋转面、体积等几何量。',
+    prototype: {
+      stem: '$(x^2+z^2)^2=4(x^2-z^2)$ 绕 $z$ 轴旋转所围体积',
+      steps: [
+        '旋转面方程：把 $x^2$ 换成 $x^2+y^2$。',
+        '球坐标下 $@rho=2@sqrt{-@cos2@varphi}$，$@varphi@in[@frac@pi4,@frac{3@pi}4]$。',
+        '对称性取 8 倍，令 $t=@cos@varphi$，用 Wallis 公式得 $@sqrt2@,@pi^2$。'
+      ],
+      answer: '$@sqrt2@,@pi^2$'
+    },
+    pitfalls: ['旋转轴与保留变量搞错。', '球坐标积分限写错。'],
+    knowledge: ['k-arc-length']
+  },
+  {
+    id: 'm-sylvester', group: 'math', title: '行列式恒等式与特征多项式',
+    signal: '特征多项式、共轭矩阵、$@det(sI+AB)$。',
+    prototype: {
+      stem: '$p(x)$ 为 $I-@overline A A$ 的特征多项式，证 $p$ 为实系数',
+      steps: [
+        '对实 $t$ 取共轭，$@overline{p(t)}=@det((t-1)I+@overline AA)$。',
+        '用 $@det(sI+AB)=@det(sI+BA)$ 交换 $A$ 与 $@overline A$。',
+        '得 $@overline{p(t)}=p(t)$ 对实 $t$ 成立，故系数全为实数。'
+      ],
+      answer: '实系数'
+    },
+    pitfalls: ['只对特征值取共轭，没处理多项式。', '忽略 $A@overline A$ 与 $@overline AA$ 不可交换。'],
+    knowledge: ['k-sylvester']
+  },
+  {
+    id: 'm-skew', group: 'math', title: '异面直线与公垂线',
+    signal: '两直线位置关系、公垂线、中点轨迹。',
+    prototype: {
+      stem: '$l_1,l_2$ 已知，判异面并求公垂线',
+      steps: [
+        '混合积 $(r_1-r_2,v_1,v_2)@ne0$ ⇒ 异面。',
+        '公垂线方向 $v=v_1@times v_2$。',
+        '令 $@overrightarrow{P_1P_2}@parallel v$ 解参数，写出标准方程；中点消参得轨迹平面。'
+      ],
+      answer: '$@frac{x+1}4=@frac{y+1}6=@frac{z+1}8$'
+    },
+    pitfalls: ['方向向量取成 $v_1$ 或 $v_2$。', '中点只写参数式不消参。'],
+    knowledge: ['k-lines-3d']
+  },
+  {
+    id: 'm-locus', group: 'math', title: '距离关系与轨迹曲面',
+    signal: '动点到两定点距离之和/差为常数，或与两球相切。',
+    prototype: {
+      stem: '两球之间与两球都相切的动球，球心轨迹',
+      steps: [
+        '内切 $PO_1=R_1-r$，外切 $PO_2=R_2+r$。',
+        '相加消去 $r$：$PO_1+PO_2=R_1+R_2$（常数）。',
+        '旋转对称 ⇒ 旋转椭球面，两球心即焦点。'
+      ],
+      answer: '旋转椭球面，球心为焦点'
+    },
+    pitfalls: ['内切/外切符号写反。', '不说明旋转对称直接断言。'],
+    knowledge: ['k-distance-locus']
+  },
+  {
+    id: 'm-reverse', group: 'math', title: '反证 + 积分因子构造',
+    signal: `结论是“存在一点使严格不等式成立”，或出现 $@xi f''+(@alpha+1)f'$ 这类组合。`,
+    prototype: {
+      stem: `$@alpha>0$，$f@ge0$，$f(0)=0$，证 $@exists@xi$ 使 $@xi f''(@xi)+(@alpha+1)f'(@xi)>@alpha f(@xi)$`,
+      steps: [
+        `反证：若恒有 $@le$，令 $h=xf'+@alpha f-@alpha@int_0^xf$，则 $h'@le0$、$h(0)=0$，故 $h@le0$。`,
+        `两边乘 $x^{@alpha-1}$ 后积分，化成 $f(x)@le@int_0^xf$。`,
+        `令 $g=@int_0^xf$，则 $g'@le g$，即 $(e^{-x}g)'@le0$，配合 $f@ge0$ 逼出 $f@equiv0$，矛盾。`
+      ],
+      answer: `存在这样的 $@xi$`
+    },
+    pitfalls: [`反证时把“存在”否定成“存在某点不成立”。`, `积分时漏掉 $x^{@alpha}$ 因子，无法消去。`],
+    knowledge: ['k-proof-methods', 'k-meanvalue-construction']
+  },
+  {
+    id: 'm-series-regroup', group: 'math', title: '条件收敛级数的分组与估计',
+    signal: `通项含 $(-1)^{[@sqrt n]}$、$[x]$ 等“缓慢变化”的符号。`,
+    prototype: {
+      stem: `$@sum_{n=2}^{@infty}@frac{(-1)^n}{@sqrt n+(-1)^{[@sqrt n]}}$ 的收敛性`,
+      steps: [
+        `按奇偶配对，把通项之差拆成“跳变项 + 平滑项”。`,
+        `跳变只在 $n=2m^2+2m$ 处发生，其和被 $@sum@frac1{m^2}$ 控制，绝对收敛。`,
+        `平滑项由 $@sqrt{2n+1}-@sqrt{2n}$ 给出，也绝对收敛；故配对级数收敛，原级数条件收敛。`
+      ],
+      answer: `条件收敛`
+    },
+    pitfalls: [`只证通项趋于 0，没处理符号块。`, `忘记配对后要说明部分和的收敛性。`],
+    knowledge: ['k-series-rearrange']
   }
 ];
