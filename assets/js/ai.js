@@ -157,6 +157,7 @@
   window.CMC_AI = {
     settings: settings,
     save: save,
+    chat: chat,
     diagnose: diagnose,
     builtinNames: BUILTIN.map(function (b) { return b.name; })
   };

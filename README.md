@@ -9,6 +9,19 @@
 - **真题练习**：初赛 + 决赛，按届次分组，也可按章节刷题；填空自动判分，解答题可写思路。
 - **整套模拟**：真题库每组提供「整套模拟」入口，带 150 分钟倒计时、已作答计数与交卷统计（已答 / 正确 / 待复盘 / 未答）。
 - **方法模拟题**：方法手册内含 10 道自编模拟题（`kind: 'mock'`），不进入真题统计，用于同一方法的加练。
+- **我的题库**：上传题目图片（浏览器 OCR）或 `.txt/.md`，AI 自动整理题干/答案/解析并归类到知识点；没有合适的知识点可新建。未登录时保存在本机，登录后同步到云端。
+- **账户与多端同步**：邮箱 + 密码登录（Supabase Auth），自建题库与自定义知识点同步到 Supabase 的 `cmc_bank` 表，行级权限（RLS）保证每人只能读写自己的数据。
+
+### 账户同步配置（一次性）
+
+1. 在 [supabase.com/dashboard](https://supabase.com/dashboard) 新建免费项目。
+2. 打开 **SQL Editor**，运行 `#/account` 页面里「复制建表 SQL」给出的语句（创建 `cmc_bank` 表与 RLS 策略）。
+3. 在 **Project Settings → API** 复制 **Project URL** 与 **anon public key**，填入站点 `#/account` 页面并保存。
+4. 注册邮箱账号（默认需点邮件确认，或在 Authentication → Providers → Email 关闭 Confirm email），登录后即自动同步。
+
+> anon key 是公开密钥，放在前端是 Supabase 的标准用法；真正的访问控制由 RLS 完成。不要填 `service_role` key。
+
+图片 OCR 使用 Tesseract.js（首次需联网下载语言包），识别失败会自动切换到手动整理表单。
 - **分层诊断**：提交后先给出“知识层（缺哪个知识点）/ 真题层（这道题从哪下手）/ 常见陷阱”，避免只对答案。
 - **AI 卡壳分析**：默认使用 **DeepSeek**（设置页填 API Key，仅存本机），可选 `deepseek-chat` / `deepseek-reasoner`；未填 Key 时自动降级到内置免费智能体（llm7.io → Pollinations）。若全部不可用，自动回退到本地诊断。
 - **练有所获**：每题附「方法一句话 + 常见错法」，知识点可单独打开并查看关联真题。
@@ -24,6 +37,7 @@ assets/js/methods.js        # 方法手册（母题 + 推导骨架）
 assets/js/data-nonmath.js   # 非数学类真题
 assets/js/data-math.js      # 数学类真题
 assets/js/data-mock.js      # 方法模拟题
+assets/js/mybank.js         # 我的题库、OCR、AI 归类、账户与同步
 assets/js/ai.js             # AI 接入（内置智能体 / 自定义 Key）
 assets/js/app.js            # 路由、渲染、判分、统计
 assets/vendor/katex/        # 本地化 KaTeX（离线可用）

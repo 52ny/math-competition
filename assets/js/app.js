@@ -848,6 +848,8 @@
     else if (seg[0] === 'wrong') view = viewWrong();
     else if (seg[0] === 'report') view = viewReport();
     else if (seg[0] === 'settings') view = viewSettings();
+    else if (seg[0] === 'my') view = window.CMC_MY ? window.CMC_MY.viewBank() : viewNotFound('我的题库');
+    else if (seg[0] === 'account') view = window.CMC_MY ? window.CMC_MY.viewAccount() : viewNotFound('账户');
     else if (seg[0] === 'tools') view = viewTools();
     else if (seg[0] === 'k') view = viewKnowledge(seg[1]);
     else if (seg[0] === 'q') view = viewQuestion(seg[1]);
@@ -869,6 +871,8 @@
       title: '学习工具',
       html: pageHead('TOOLS', '学习工具', '把做题、复盘、统计串成闭环。', '<a href="#/home">首页</a> / 学习工具') +
         '<div class="grid grid-2">' +
+        '<a class="card card-link" href="#/my"><h3>我的题库</h3><p class="muted">上传图片/文件，OCR + AI 自动归类；没有合适知识点就新建。</p></a>' +
+        '<a class="card card-link" href="#/account"><h3>账户与同步</h3><p class="muted">邮箱密码登录，自建题库与进度多端同步。</p></a>' +
         '<a class="card card-link" href="#/wrong"><h3>错题本</h3><p class="muted">当前待攻克 ' + s.stuck + ' 题。按章节复盘，遮住解析重做。</p></a>' +
         '<a class="card card-link" href="#/report"><h3>学习报告</h3><p class="muted">章节掌握度、薄弱知识点与“下一步做这三题”。</p></a>' +
         '<a class="card card-link" href="#/guide"><h3>备考路线</h3><p class="muted">五周计划、每日时间分配与考场策略。</p></a>' +
@@ -927,6 +931,8 @@
     html += '<div class="side-group"><div class="side-title">题库与工具</div>' +
       sideLink('#/papers', '真题库', 'papers', active) +
       sideLink('#/methods', '方法手册', 'methods', active) +
+      sideLink('#/my', '我的题库', 'my', active) +
+      sideLink('#/account', '账户与同步', 'account', active) +
       sideLink('#/tools', '学习工具', 'tools', active) +
       sideLink('#/wrong', '错题本', 'wrong', active) +
       sideLink('#/report', '学习报告', 'report', active) +
@@ -944,6 +950,7 @@
     var btn = e.target.closest('[data-act]');
     if (!btn) return;
     var act = btn.getAttribute('data-act');
+    if (window.CMC_MY && window.CMC_MY.handle(act, btn)) return;
     var qid = null;
     var card = cardOf(btn);
     if (card) qid = card.getAttribute('data-qid');
@@ -1266,7 +1273,14 @@
 
   /* 启动 */
   applyTheme();
+  window.CMC_APP = {
+    pageHead: pageHead,
+    route: route,
+    toast: toast,
+    esc: esc
+  };
   route();
+
   window.addEventListener('hashchange', function () {
     route();
     var hash = location.hash;
