@@ -687,6 +687,10 @@
       return !isMock(q) && q.group === seg[1] && q.edition === Number(seg[2]) && q.stage === stage;
     });
   }
+  var PAPER_TOTAL = {
+    'nm-16-0': 10, 'nm-14-1': 11, 'nm-13-0': 10, 'nm-12-0': 11, 'nm-12-1': 11,
+    'nm-10-0': 10, 'math-16-0': 6, 'math-11-0': 6, 'math-6-0': 6, 'math-2-0': 6
+  };
   function viewPaper(group, ed, stIdx) {
     var key = group + '-' + ed + '-' + stIdx;
     if (key !== paperKey) { paperKey = key; stopPaperTimer(); paperSeconds = 150 * 60; }
@@ -696,9 +700,11 @@
     });
     if (!qs.length) return viewNotFound('试卷');
     var total = qs.reduce(function (s, q) { return s + q.score; }, 0);
+    var expected = PAPER_TOTAL[key] || qs.length;
+    var note = expected === qs.length ? '完整收录' : '原卷约 ' + expected + ' 题，本站已收录 ' + qs.length + ' 题（其余待补）';
     var answered = qs.filter(function (q) { return !!attempt(q.id); }).length;
     var html = pageHead('MOCK EXAM', '第 ' + ed + ' 届 · ' + stage + ' · ' + (group === 'nm' ? '非数学类' : '数学类'),
-      '满分 ' + total + ' 分 · 建议 150 分钟 · 共 ' + qs.length + ' 题。先按考场节奏做完，再逐题看解析。',
+      '满分 ' + total + ' 分 · 建议 150 分钟 · 共 ' + qs.length + ' 题（' + note + '）。先按考场节奏做完，再逐题看解析。',
       '<a href="#/home">首页</a> / <a href="#/papers">真题库</a> / 第' + ed + '届' + stage) +
       '<div class="card" style="position:sticky;top:calc(var(--header-h) + 8px);z-index:20;border-color:var(--md-primary)">' +
       '<div class="btn-row"><b>模拟计时</b>' +
