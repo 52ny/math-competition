@@ -5,6 +5,7 @@
 ## 功能
 
 - **双入口**：非数学类（高等数学主线）与数学类（数学分析 / 高等代数 / 解析几何）。
+- **方法手册**：按“同一个方法”聚合真题，每个方法给出适用信号、母题、推导骨架、易错点，并可跳到同类真题（20 个方法，覆盖极限、挖洞、补面、压缩映射、罗尔构造等）。
 - **真题练习**：初赛 + 决赛，按届次分组，也可按章节刷题；填空自动判分，解答题可写思路。
 - **分层诊断**：提交后先给出“知识层（缺哪个知识点）/ 真题层（这道题从哪下手）/ 常见陷阱”，避免只对答案。
 - **AI 卡壳分析**：默认使用 **DeepSeek**（设置页填 API Key，仅存本机），可选 `deepseek-chat` / `deepseek-reasoner`；未填 Key 时自动降级到内置免费智能体（llm7.io → Pollinations）。若全部不可用，自动回退到本地诊断。
@@ -17,6 +18,7 @@
 index.html
 assets/css/style.css
 assets/js/knowledge.js      # 章节 + 知识点
+assets/js/methods.js        # 方法手册（母题 + 推导骨架）
 assets/js/data-nonmath.js   # 非数学类真题
 assets/js/data-math.js      # 数学类真题
 assets/js/ai.js             # AI 接入（内置智能体 / 自定义 Key）

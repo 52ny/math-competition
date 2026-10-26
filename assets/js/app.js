@@ -16,6 +16,9 @@
   QS.forEach(function (q) { QMAP[q.id] = q; });
   var KMAP = {};
   KP.forEach(function (k) { KMAP[k.id] = k; });
+  var METHODS = window.CMC_METHODS || [];
+  var MMAP = {};
+  METHODS.forEach(function (m) { MMAP[m.id] = m; });
   var CHMAP = {};
   CH.forEach(function (c) { CHMAP[c.id] = c; });
 
@@ -395,7 +398,7 @@
         '<div class="eyebrow" style="color:rgba(255,255,255,.8)">CHINA COLLEGIATE MATHEMATICS COMPETITION</div>' +
         '<h1>把历年真题，练成你自己的方法库</h1>' +
         '<p>非数学类与数学类双入口，初赛 + 决赛真题。逐题作答、分步解析、卡壳诊断，把“看懂了”变成“写得出”。</p>' +
-        '<div class="btn-row"><a class="btn" href="#/nm">开始非数学类</a><a class="btn" href="#/math">数学类</a><a class="btn ghost" href="#/papers">浏览真题库</a></div>' +
+        '<div class="btn-row"><a class="btn" href="#/nm">开始非数学类</a><a class="btn" href="#/math">数学类</a><a class="btn ghost" href="#/methods">方法手册</a><a class="btn ghost" href="#/papers">真题库</a></div>' +
         '</section>' +
         '<div class="stat-row">' +
         '<div class="stat"><b>' + s.total + '</b><span>收录真题（非数学 ' + nm + ' / 数学 ' + mt + '）</span></div>' +
@@ -403,6 +406,7 @@
         '<div class="stat"><b>' + s.stuck + '</b><span>待攻克</span></div>' +
         '<div class="stat"><b>' + s.pct + '%</b><span>总体完成度</span><div class="progress"><i style="width:' + s.pct + '%"></i></div></div>' +
         '</div>' +
+        '<div class="card" style="margin-top:14px"><b>方法手册：</b>按“同一个方法”聚合真题，每个方法给出适用信号、母题与推导骨架。<a href="#/methods">进入方法手册 →</a></div>' +
         '<h2 id="entry">两个入口</h2>' +
         '<div class="grid grid-2">' +
         '<a class="card card-link" href="#/nm"><h3>非数学类 · 高等数学主线</h3>' +
@@ -530,6 +534,61 @@
 
   function relatedQuestions(kid) {
     return QS.filter(function (q) { return (q.knowledge || []).indexOf(kid) >= 0; });
+  }
+
+  function questionsOfMethod(m) {
+    var ks = m.knowledge || [];
+    var seen = {};
+    return QS.filter(function (q) {
+      if ((m.qs || []).indexOf(q.id) >= 0) return true;
+      return (q.knowledge || []).some(function (k) { return ks.indexOf(k) >= 0; });
+    }).filter(function (q) {
+      if (seen[q.id]) return false;
+      seen[q.id] = 1;
+      return true;
+    }).sort(function (a, b) { return b.edition - a.edition; });
+  }
+
+  function viewMethods() {
+    var f = state.methodFilter || 'all';
+    var list = METHODS.filter(function (m) { return f === 'all' || m.group === f; })
+      .sort(function (a, b) { return a.group === b.group ? 0 : (a.group === 'nm' ? -1 : 1); });
+    var chips = [['all', '全部'], ['nm', '非数学类'], ['math', '数学类']].map(function (c) {
+      return '<button class="chip ' + (f === c[0] ? 'on' : '') + '" data-act="method-filter" data-val="' + c[0] + '">' + c[1] + '</button>';
+    }).join('');
+    var html = pageHead('METHODS', '方法手册', '按“同一个方法”把真题聚在一起：先看适用信号，再看母题的推导骨架，最后跳到同类真题。',
+      '<a href="#/home">首页</a> / 方法手册') +
+      '<div class="filter-bar">' + chips + '<span class="small muted">共 ' + list.length + ' 个方法</span></div>' +
+      '<div class="grid grid-2">' + list.map(function (m) {
+        var qs = questionsOfMethod(m);
+        return '<a class="card card-link" href="#/methods/' + m.id + '">' +
+          '<div class="badge src" style="margin-bottom:6px">' + (m.group === 'nm' ? '非数学类' : '数学类') + '</div>' +
+          '<h3>' + esc(m.title) + '</h3>' +
+          '<p class="muted small">' + rich(m.signal) + '</p>' +
+          '<p class="small muted">母题：' + rich(m.prototype.stem) + '</p>' +
+          '<div class="small muted">关联真题 ' + qs.length + ' 道</div>' +
+          '</a>';
+      }).join('') + '</div>';
+    return { title: '方法手册', html: html };
+  }
+
+  function viewMethod(id) {
+    var m = MMAP[id];
+    if (!m) return viewNotFound('方法');
+    var qs = questionsOfMethod(m);
+    var html = pageHead(m.group === 'nm' ? 'NON-MATH · METHOD' : 'MATH · METHOD', m.title, m.signal,
+      '<a href="#/home">首页</a> / <a href="#/methods">方法手册</a> / ' + esc(m.title));
+    html += '<div class="kcard"><div class="k-label">适用信号</div><p>' + rich(m.signal) + '</p>' +
+      '<div class="k-section"><div class="k-label">推导骨架</div><ol class="k-list">' +
+      (m.prototype.steps || []).map(function (s) { return '<li>' + rich(s) + '</li>'; }).join('') +
+      '</ol></div>' +
+      '<div class="answer-final"><b>母题：</b>' + rich(m.prototype.stem) + '　<b>结论：</b>' + rich(m.prototype.answer) + '</div>' +
+      ((m.pitfalls || []).length ? '<div class="k-section"><div class="k-label">易错点</div><ul class="pitfall-list">' +
+        m.pitfalls.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' : '') +
+      '</div>';
+    html += '<h2 id="related">同类真题（' + qs.length + '）</h2>';
+    html += qs.length ? qs.map(questionCard).join('') : '<div class="empty">这个方法的关联真题还在整理中，可先看其他方法。</div>';
+    return { title: m.title, html: html };
   }
 
   function viewNotFound(what) {
@@ -713,6 +772,7 @@
     else if (seg[0] === 'guide') view = viewGuide();
     else if (seg[0] === 'nm' || seg[0] === 'math') view = seg[1] ? viewChapter(seg[0], seg[1]) : viewMap(seg[0]);
     else if (seg[0] === 'papers') view = viewPapers();
+    else if (seg[0] === 'methods') view = seg[1] ? viewMethod(seg[1]) : viewMethods();
     else if (seg[0] === 'wrong') view = viewWrong();
     else if (seg[0] === 'report') view = viewReport();
     else if (seg[0] === 'settings') view = viewSettings();
@@ -794,6 +854,7 @@
 
     html += '<div class="side-group"><div class="side-title">题库与工具</div>' +
       sideLink('#/papers', '真题库', 'papers', active) +
+      sideLink('#/methods', '方法手册', 'methods', active) +
       sideLink('#/tools', '学习工具', 'tools', active) +
       sideLink('#/wrong', '错题本', 'wrong', active) +
       sideLink('#/report', '学习报告', 'report', active) +
@@ -817,6 +878,11 @@
 
     if (act === 'paper-filter') {
       state.paperFilter = btn.getAttribute('data-val');
+      route(false);
+      return;
+    }
+    if (act === 'method-filter') {
+      state.methodFilter = btn.getAttribute('data-val');
       route(false);
       return;
     }
@@ -1052,6 +1118,12 @@
       var hay = (k.title + ' ' + k.summary + ' ' + (k.points || []).join(' ')).toLowerCase();
       if (hit(hay)) {
         out.push('<a class="search-item" href="#/k/' + k.id + '"><b>知识点</b> ' + esc(k.title) + '<span class="meta">' + (k.group === 'nm' ? '非数学类' : '数学类') + '</span></a>');
+      }
+    });
+    METHODS.forEach(function (m) {
+      var hay = (m.title + ' ' + m.signal + ' ' + (m.prototype ? m.prototype.stem : '')).toLowerCase();
+      if (hit(hay)) {
+        out.push('<a class="search-item" href="#/methods/' + m.id + '"><b>方法</b> ' + esc(m.title) + '<span class="meta">' + (m.group === 'nm' ? '非数学类' : '数学类') + '</span></a>');
       }
     });
     searchResults.innerHTML = out.length ? out.slice(0, 20).join('') : '<p class="search-hint">没有找到，换个关键词试试（如“格林”“2024”“压缩映射”）。</p>';
