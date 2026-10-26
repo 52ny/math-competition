@@ -689,7 +689,7 @@
   }
   var PAPER_TOTAL = {
     'nm-16-0': 10, 'nm-14-1': 11, 'nm-13-0': 10, 'nm-12-0': 11, 'nm-12-1': 11,
-    'nm-10-0': 10, 'math-16-0': 6, 'math-11-0': 6, 'math-6-0': 6, 'math-2-0': 6
+    'nm-10-0': 10, 'math-16-0': 6, 'math-11-0': 6, 'math-6-0': 6, 'math-2-0': 8
   };
   function viewPaper(group, ed, stIdx) {
     var key = group + '-' + ed + '-' + stIdx;

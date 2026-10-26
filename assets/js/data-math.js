@@ -258,5 +258,194 @@ window.CMC_QUESTIONS_MATH = [
     pitfalls: ['(1)⇒(2) 只证了 $n=2$，没有完成归纳。', '展开行列式时符号或转置写错（不影响非零性，但要说明）。'],
     takeaway: '函数线性无关 ⇔ 存在一组点使取值矩阵可逆；归纳构造“最后一列”的行列式是标准手法。',
     knowledge: ['k-dimension']
+  },
+
+  /* ================= 第11届初赛（2019）数学 A：补全四、五、六 ================= */
+  {
+    id: 'm2019-4', group: 'math', edition: 11, year: 2019, stage: '初赛', paper: '数学类 A 卷',
+    topic: 'algebra', type: 'solution', score: 20, difficulty: 5,
+    stem: `已知 $f_1$ 为实 $n$ 元正定二次型。令 $$V={f@mid f@text{ 为实 }n@text{ 元二次型，且对任何实数 }k, kf+f_1@text{ 为恒号二次型}}.$$ 证明：$V$ 按通常加法与数乘构成实向量空间，并求其维数。`,
+    answer: `$V={kf_1@mid k@in@mathbb{R}}$，维数为 $1$`,
+    accept: [`dim V = 1`],
+    solution: [
+      `设 $f,f_1$ 的矩阵为 $A,B$，$B$ 正定，故存在可逆 $P$ 使 $B=PP^T$、$A=P@operatorname{diag}(@lambda_1,@cdots,@lambda_n)P^T$。`,
+      `若 $@lambda_1@ne@lambda_2$，取 $k$ 使 $(k@lambda_1+1)(k@lambda_2+1)<0$，则 $kf+f_1$ 在两点异号，不是恒号二次型，矛盾。故所有 $@lambda_i$ 相等。`,
+      `于是 $A=@lambda B$，即 $f=@lambda f_1$，$V={kf_1}$，按通常运算是一维实向量空间。`
+    ],
+    hints: [`把 $f_1$ 化成标准形（正定 ⇒ 可写成 $PP^T$）。`, `恒号二次型的特征值必须同号（或全为零）。`, `证明所有特征值相等，即 $A$ 是 $B$ 的数量倍。`],
+    pitfalls: [`只验证 $V$ 对加法封闭，没有求维数。`, `把“恒号”理解成“恒正”。`],
+    takeaway: `正定二次型可作“度量”：$A$ 相对 $B$ 的标准形是 $@operatorname{diag}(@lambda_i)$，恒号条件迫使所有 $@lambda_i$ 相等。`,
+    knowledge: ['k-dimension', 'k-quadratic-surface']
+  },
+  {
+    id: 'm2019-5', group: 'math', edition: 11, year: 2019, stage: '初赛', paper: '数学类 A 卷',
+    topic: 'analysis-limit', type: 'solution', score: 15, difficulty: 5,
+    stem: `设 $@delta>0$，$@alpha@in(0,1)$，实数列 $@left@{x_n@right@}$ 满足 $$x_{n+1}=x_n@left(1-@frac{h_n}{n^@alpha}@right)+@frac{1}{n^{@alpha+@delta}},@qquad n@ge1,$$ 其中 $@left@{h_n@right@}$ 有正的上下界。证明：$@left@{n^@delta x_n@right@}$ 有界。`,
+    answer: `见解析（构造 $C/ n^@delta$ 型归纳上界）`,
+    accept: [],
+    solution: [
+      `取 $c=@inf h_n>0$。$n$ 充分大时 $|x_{n+1}|@le(1-@frac{c}{n^@alpha})|x_n|+@frac{1}{n^{@alpha+@delta}}$，且 $@frac{@delta}{n}@le@frac{c}{2n^@alpha}$。`,
+      `取 $C=@max(N^@delta|x_N|,@frac2c)$，归纳证明 $|x_n|@le C n^{-@delta}$。`,
+      `关键是估计 $C(n^{-@delta}-(n+1)^{-@delta})@le@frac{C@delta}{n^{1+@delta}}$，再与 $@frac{Cc-1}{n^{@alpha+@delta}}$ 比较，差值 $@le0$。`
+    ],
+    hints: [`先对绝对值放缩，把 $h_n$ 换成下确界 $c$。`, `目标形式提示用归纳：假设 $|x_n|@le Cn^{-@delta}$。`, `用中值定理估计 $(n+1)^{-@delta}-n^{-@delta}$。`],
+    pitfalls: [`没有利用 $@delta/n@le c/(2n^@alpha)$ 来控制低阶项。`, `直接对递推取极限，忽略 $1/n^{@alpha+@delta}$ 的累积。`],
+    takeaway: `带衰减系数的递推：先放缩成 $|x_{n+1}|@le(1-c n^{-@alpha})|x_n|+n^{-@alpha-@delta}$，再用 $Cn^{-@delta}$ 作归纳假设。`,
+    knowledge: ['k-contraction', 'k-sequence-monotone']
+  },
+  {
+    id: 'm2019-6', group: 'math', edition: 11, year: 2019, stage: '初赛', paper: '数学类 A 卷',
+    topic: 'analysis-calculus', type: 'solution', score: 20, difficulty: 5,
+    stem: `设 $f(x)=@dfrac{1}{1+e^x}$。(i) 证明 $f$ 在 $[0,+@infty)$ 上是凸函数，并证明 $x,y@ge0$ 时 $f(x)+f(y)@le f(0)+f(x+y)$；(ii) 设 $n@ge3$，确定集合 $$E=@left@{@sum_{k=1}^{n}f(x_k)@mid @sum_{k=1}^{n}x_k=0,@ x_k@in@mathbb{R}@right@}.$$`,
+    answer: `(i) 成立；(ii) $E=(1,@,n-1)$（开区间）`,
+    accept: [`(1,n-1)`],
+    solution: [
+      `$f''(x)=@frac{e^x(e^x-1)}{(1+e^x)^3}@ge0$（$x@ge0$），故凸；$f'$ 单调增，得 $f(x+y)-f(x)-f(y)+f(0)=@int_0^y(f'(t+x)-f'(t))dt@ge0$。`,
+      `注意 $f(x)+f(-x)=1$。若 $x_1=@cdots=x_n=0$，和为 $@frac n2$；一般情形把负项配对，可证 $@sum f(x_k)>1$。`,
+      `取 $x_1=@cdots=x_{n-1}=@frac u{n-1}$，$x_n=-u$，令 $u@to+@infty$ 得上确界 $n-1$；由 $E={n-z@mid z@in E}$ 知 $@sup E=n-1$ 且取不到。`,
+      `$E$ 连续且 $@inf E=1$、$@sup E=n-1$ 均取不到，故 $E=(1,n-1)$。`
+    ],
+    hints: [`(i) 直接算二阶导；再用 $f'(t+x)@ge f'(t)$ 积分。`, `(ii) 先看 $x_i$ 全为 0 与极限情形 $u@to+@infty$。`, `利用 $f(x)+f(-x)=1$ 得到对称性 $E=n-E$。`],
+    pitfalls: [`把 $E$ 写成闭区间 $[1,n-1]$（端点取不到）。`, `(i) 只说“凸函数”不验证二阶导。`],
+    takeaway: `逻辑斯蒂函数的凸性与 $f(x)+f(-x)=1$，是确定“和集”上下确界的标准工具。`,
+    knowledge: ['k-convex', 'k-meanvalue-construction']
+  },
+
+  /* ================= 第6届初赛（2014）数学类：补全四、五、六 ================= */
+  {
+    id: 'm2014-4', group: 'math', edition: 6, year: 2014, stage: '初赛', paper: '数学类',
+    topic: 'analysis-calculus', type: 'solution', score: 15, difficulty: 5,
+    stem: `设 $f(x)$ 在 $@mathbb{R}$ 上有二阶导数，$f,f',f''$ 都大于零，且存在正数 $a,b$ 使 $f''(x)@le af(x)+bf'(x)$ 对一切 $x$ 成立。(i) 证明 $@lim_{x@to-@infty}f'(x)=0$；(ii) 证明存在常数 $c$ 使 $f'(x)@le cf(x)$；(iii) 求最小常数 $c$。`,
+    answer: `$c=@dfrac{b+@sqrt{b^2+4a}}{2}$`,
+    accept: [],
+    solution: [
+      `(i) $f,f'$ 单调递增为正，$@lim_{x@to-@infty}f$ 与 $@lim f'$ 存在；由中值定理 $f(x+1)-f(x)=f'(x+@theta_x)>f'(x)$，左边趋于 0，故 $f'@to0$。`,
+      `(ii) 取 $c=@frac{b+@sqrt{b^2+4a}}2$，则 $c>b$ 且 $a/(b-c)=-c$。由条件得 $$f''-cf'@le(b-c)(f'-cf).$$`,
+      `于是 $e^{-(b-c)x}(f'-cf)$ 单调递减，且 $x@to-@infty$ 时极限为 0，故 $f'-cf@le0$。`,
+      `(iii) 对 $f=e^{cx}$ 等号成立，故 $c$ 最佳。`
+    ],
+    hints: [`(i) 先说明两个极限存在，再用中值定理。`, `(ii) 把不等式整理成“某函数单调递减”的形式。`, `(iii) 用 $f=e^{cx}$ 验证等号。`],
+    pitfalls: [`(ii) 构造的指数因子符号写反。`, `(iii) 只求出 $c$ 不验证最佳性。`],
+    takeaway: `微分不等式 $f''@le af+bf'$ 的标准处理：配方成 $(f'-cf)'@le(b-c)(f'-cf)$，再乘指数因子。`,
+    knowledge: ['k-meanvalue-construction', 'k-convex']
+  },
+  {
+    id: 'm2014-5', group: 'math', edition: 6, year: 2014, stage: '初赛', paper: '数学类',
+    topic: 'algebra', type: 'solution', score: 20, difficulty: 5,
+    stem: `设 $m$ 为给定正整数。证明：对任何正整数 $n,l$，存在 $m$ 阶方阵 $X$，使 $$X^n+X^l=I+@begin{pmatrix}1&0&0&@cdots&0§2&1&0&@cdots&0§3&2&1&@cdots&0§@vdots&&&@ddots&@vdots§m&m-1&m-2&@cdots&1@end{pmatrix}.$$`,
+    answer: `见解析（在 $I+@operatorname{span}(H)$ 中逐项比较系数）`,
+    accept: [],
+    solution: [
+      `令 $H$ 为下移位矩阵（次对角线为 1），则右端可写成 $I+2H+3H^2+@cdots+mH^{m-1}$。`,
+      `设 $X=I+a_1H+@cdots+a_{m-1}H^{m-1}$，则 $X^n=I+na_1H+(na_2+f_1)H^2+@cdots$，$X^l$ 同理。`,
+      `比较 $H^k$ 的系数得方程组 $(n+l)a_1=2$，$(n+l)a_2+f_1+g_1=3$，……，逐个可解（$n+l>0$）。`,
+      `故存在这样的 $X$。`
+    ],
+    hints: [`把右端矩阵写成 $H$ 的多项式。`, `设 $X$ 也是 $H$ 的多项式，利用 $H^m=0$ 展开 $X^n$。`, `系数方程组是三角形的，从低次到高次逐个解。`],
+    pitfalls: [`直接对矩阵开 $n$ 次方，忽略 $H$ 幂零结构。`, `没有说明 $n+l@ne0$（正整数保证）。`],
+    takeaway: `幂零矩阵的多项式方程：把未知量和目标都写成 $H$ 的多项式，逐项比较系数。`,
+    knowledge: ['k-jordan', 'k-sylvester']
+  },
+  {
+    id: 'm2014-6', group: 'math', edition: 6, year: 2014, stage: '初赛', paper: '数学类',
+    topic: 'analysis-series', type: 'solution', score: 20, difficulty: 5,
+    stem: `设 $@alpha@in(0,1)$，$@left@{a_n@right@}$ 是正项数列，且 $$@liminf_{n@to@infty}n^@alpha@left(@frac{a_n}{a_{n+1}}-1@right)=@lambda@in(0,+@infty).$$ 证明：对任意 $k>0$，$@lim_{n@to@infty}n^ka_n=0$。`,
+    answer: `见解析（先证 $a_n@to0$，再对 $b_n=n^ka_n$ 复用）`,
+    accept: [],
+    solution: [
+      `由条件，$n$ 充分大时 $a_n/a_{n+1}-1>0$，故 $@left@{a_n@right@}$ 单调递减，$a_n@to a@ge0$。`,
+      `若 $a>0$，则 $a_n-a_{n+1}@ge@frac{@lambda a}{4n^@alpha}$，与 $@sum n^{-@alpha}$ 发散矛盾，故 $a=0$。`,
+      `令 $b_n=n^ka_n$，计算 $$n^@alpha@left(@frac{b_n}{b_{n+1}}-1@right)=@left(@frac{n}{n+1}@right)^k@left[n^@alpha@left(@frac{a_n}{a_{n+1}}-1@right)-n^@alpha@left((1+@tfrac1n)^k-1@right)@right],$$ 其下极限仍为 $@lambda$。`,
+      `对 $b_n$ 重复前两步，得 $b_n@to0$，即 $n^ka_n@to0$。`
+    ],
+    hints: [`先证 $a_n$ 单调递减且极限为 0：否则与调和型发散矛盾。`, `研究 $b_n=n^ka_n$，它的比值条件与 $a_n$ 几乎相同。`, `注意 $(1+1/n)^k-1@sim k/n=o(n^{-@alpha})$。`],
+    pitfalls: [`直接对 $a_n$ 用比较判别，方向不清楚。`, `忘记 $@alpha<1$ 时 $@sum n^{-@alpha}$ 发散。`],
+    takeaway: `“比值型条件”可通过乘 $n^k$ 传递；先证极限为 0，再对一个新数列复用同一论证。`,
+    knowledge: ['k-series-tests', 'k-uniform-continuity']
+  },
+
+  /* ================= 第2届初赛（2010）数学类：补全四~八 ================= */
+  {
+    id: 'm2010-4', group: 'math', edition: 2, year: 2010, stage: '初赛', paper: '数学类',
+    topic: 'analysis-calculus', type: 'solution', score: 10, difficulty: 4,
+    stem: `设 $f(x)$ 在 $[0,1]$ 上 Riemann 可积，在 $x=1$ 处可导，$f(1)=0$，$f'(1)=a$。证明：$$@lim_{n@to+@infty}n^2@int_0^1x^nf(x)dx=-a.$$`,
+    answer: `$-a$`,
+    accept: [],
+    solution: [
+      `令 $r(x)=f(x)-a(x-1)$，由 Peano 型 Taylor 公式，$@forall@varepsilon>0$，当 $1-@delta<x@le1$ 时 $|r(x)|@le@varepsilon(1-x)$。`,
+      `拆成三段：$@int_0^@delta$、$@int_@delta^1ax^n(x-1)$、$@int_@delta^1x^nr(x)$。`,
+      `第一段 $@le M@delta^{n+1}/(n+1)$；第二段主项 $-a/((n+1)(n+2))$；第三段 $@le@varepsilon/((n+1)(n+2))$。`,
+      `乘 $n^2$ 后取极限，第一段为 0，后两段给出 $-a$。`
+    ],
+    hints: [`在 $x=1$ 处展开：$f(x)=a(x-1)+o(1-x)$。`, `把积分拆成“靠近 1”和“远离 1”两段。`, `关键恒等式 $@int_0^1x^n(1-x)dx=@frac{1}{(n+1)(n+2)}$。`],
+    pitfalls: [`只做分部积分，无法处理 $f$ 仅可积。`, `忽略靠近 1 的边界层估计。`],
+    takeaway: `$@int x^nf$ 的渐近：质量集中在 $x=1$，用 $x=1$ 处的 Taylor 展开 + 边界层拆分。`,
+    knowledge: ['k-meanvalue', 'k-convergence-improper']
+  },
+  {
+    id: 'm2010-5', group: 'math', edition: 2, year: 2010, stage: '初赛', paper: '数学类',
+    topic: 'geometry', type: 'solution', score: 15, difficulty: 4,
+    stem: `已知非退化二次曲面 $@Sigma$ 过九点：$A(1,0,0),B(1,1,2),C(1,-1,-2),D(3,0,0),E(3,1,2),F(3,-2,-4),G(0,1,4),H(3,-1,-2),I(5,2@sqrt2,8)$。问 $@Sigma$ 是哪一类曲面？`,
+    answer: `单叶双曲面`,
+    accept: [`单叶双曲面`],
+    solution: [
+      `$A,B,C$ 共线，$D,E,F$ 共线。能含直线的非退化二次曲面只有单叶双曲面与双曲抛物面。`,
+      `直线 $ABC$ 与 $DEF$ 平行且不重合。`,
+      `双曲抛物面的同族直母线两两异面、不同族相交，不可能含两条平行直线；故只能是单叶双曲面。`
+    ],
+    hints: [`先找共线的三点：能含直线的二次曲面只有两类。`, `再看两条直线的位置关系（平行/相交/异面）。`, `用双曲抛物面的直母线性质排除。`],
+    pitfalls: [`没有先判断退化性。`, `把椭圆抛物面也当成直纹面。`],
+    takeaway: `二次曲面分类的几何判别：含直线 ⇒ 直纹面；两条平行直线 ⇒ 单叶双曲面。`,
+    knowledge: ['k-quadratic-surface', 'k-lines-3d']
+  },
+  {
+    id: 'm2010-6', group: 'math', edition: 2, year: 2010, stage: '初赛', paper: '数学类',
+    topic: 'algebra', type: 'solution', score: 20, difficulty: 5,
+    stem: `设 $A$ 为 $n@times n$ 实矩阵（未必对称），对任一实向量 $@alpha$ 有 $@alpha A@alpha^T@ge0$，且存在 $@beta$ 使 $@beta A@beta^T=0$，并对任意 $x,y$，当 $xAy^T@ne0$ 时有 $xAy^T+yAx^T@ne0$。证明：对任意 $v$，$vA@beta^T=0$。`,
+    answer: `见解析（对 $v+r@beta$ 用非负性，构造二次函数为负）`,
+    accept: [],
+    solution: [
+      `对任意实数 $r$，$(v+r@beta)A(v+r@beta)^T@ge0$。`,
+      `展开：$vAv^T+r(vA@beta^T+@beta Av^T)+r^2@beta A@beta^T@ge0$；因 $@beta A@beta^T=0$，得 $vAv^T+rS@ge0$，其中 $S=vA@beta^T+@beta Av^T$。`,
+      `若 $vA@beta^T@ne0$，由题设 $S@ne0$，取 $r$ 与 $S$ 异号且 $|r|$ 充分大，使 $vAv^T+rS<0$，矛盾。`,
+      `故 $vA@beta^T=0$。`
+    ],
+    hints: [`把 $v$ 换成 $v+r@beta$，用“对所有向量非负”这一条件。`, `展开后是关于 $r$ 的一次函数（二次项系数为 0）。`, `一次函数不可能恒非负，除非斜率 $S=0$。`],
+    pitfalls: [`只代入 $r=1$，得不到结论。`, `忽略题设中 $S@ne0$ 的条件。`],
+    takeaway: `“对任意向量二次型非负”⇒ 沿任意方向的二次函数非负；若二次项消失，则一次项必须为 0。`,
+    knowledge: ['k-quadratic-surface', 'k-dimension']
+  },
+  {
+    id: 'm2010-7', group: 'math', edition: 2, year: 2010, stage: '初赛', paper: '数学类',
+    topic: 'analysis-calculus', type: 'solution', score: 10, difficulty: 4,
+    stem: `设 $f$ 在 $[0,1]$ 上 Riemann 可积，$0@le f@le1$。证明：对任何 $@varepsilon>0$，存在只取 0,1 的分段常数函数 $g$，使对任意 $[@alpha,@beta]@subset[0,1]$ 有 $$@left|@int_@alpha^@beta(f-g)dx@right|<@varepsilon.$$`,
+    answer: `见解析（用 $f$ 的积分构造 0-1 分段函数）`,
+    accept: [],
+    solution: [
+      `取 $n$ 充分大，令 $A_m=@left[@frac mn,@frac mn+@int_{m/n}^{(m+1)/n}f@right)$，$g=1$ 于 $@bigcup A_m$，否则为 0。`,
+      `对任意 $@alpha<@beta$，把积分拆成整段与两端不足一段的部分。`,
+      `整段上 $@int(f-g)=0$（按构造长度相等），两端总长 $@le@frac2n$，故绝对值 $<@frac2n<@varepsilon$。`
+    ],
+    hints: [`构造“把 $f$ 的积分搬到每个小区间左端”的集合。`, `整段区间上 $f$ 与 $g$ 积分相等。`, `只需控制两端不足一个小区间的部分。`],
+    pitfalls: [`只做整体逼近，不控制任意子区间。`, `忘记 $0@le f@le1$ 保证长度不超区间。`],
+    takeaway: `可积函数的“区间积分”可用 0-1 分段函数精确复制，误差只来自两端不足一段的部分。`,
+    knowledge: ['k-int-techniques', 'k-inequality']
+  },
+  {
+    id: 'm2010-8', group: 'math', edition: 2, year: 2010, stage: '初赛', paper: '数学类',
+    topic: 'analysis-calculus', type: 'solution', score: 10, difficulty: 5,
+    stem: `设 $@varphi:(0,+@infty)@to(0,+@infty)$ 严格单调下降、连续，$@lim_{t@to0^+}@varphi(t)=+@infty$，且 $$@int_0^{+@infty}@varphi(t)dt=@int_0^{+@infty}@varphi^{-1}(t)dt=a<+@infty.$$ 证明：$$@int_0^{+@infty}[@varphi(t)]^2dt+@int_0^{+@infty}[@varphi^{-1}(t)]^2dt@ge@frac12a^{3/2}.$$`,
+    answer: `见解析（Cauchy–Schwarz + 选 $p,q$ 使两块相等）`,
+    accept: [],
+    solution: [
+      `取 $p,q>0$ 且 $pq=a$，记 $P=@int_p^{+@infty}@varphi$，$Q=@int_q^{+@infty}@varphi^{-1}$，$I=a-P-Q$。`,
+      `Cauchy–Schwarz：$@int_0^q(@varphi^{-1})^2@ge@frac1q(a-Q)^2$，$@int_0^p@varphi^2@ge@frac1p(a-P)^2$。`,
+      `两式相加并用 $pq=a$ 与均值不等式，下界化为 $@frac{2}{@sqrt a}(I+P)(I+Q)$。`,
+      `选 $p,q$ 使 $P=Q$，化简得 $@ge@frac{1}{@sqrt2}@cdot@frac{(a+I)^2}{4}@ge@frac12a^{3/2}$。`
+    ],
+    hints: [`把积分拆成 $[0,p]$ 与 $[p,@infty)$，用 $pq=a$ 配对。`, `$@int_0^q g^2@ge@frac1q(@int_0^qg)^2$ 是 Cauchy–Schwarz。`, `最后对 $p,q$ 优化，使两块相等。`],
+    pitfalls: [`直接对整个区间用 Cauchy，界太松。`, `忘记 $@varphi$ 与 $@varphi^{-1}$ 的积分面积关系。`],
+    takeaway: `函数与其反函数的平方积分：拆点 $p,q$、Cauchy–Schwarz、再用 $pq=a$ 优化。`,
+    knowledge: ['k-inequality', 'k-convergence-improper']
   }
 ];
