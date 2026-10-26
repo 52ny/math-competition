@@ -8,10 +8,11 @@
     return a.order - b.order;
   });
   var KP = window.CMC_KNOWLEDGE.points;
-  var QS = (window.CMC_QUESTIONS_NM || []).concat(window.CMC_QUESTIONS_MATH || []).map(function (q, i) {
+  var QS = (window.CMC_QUESTIONS_NM || []).concat(window.CMC_QUESTIONS_MATH || [], window.CMC_QUESTIONS_MOCK || []).map(function (q, i) {
     q.no = i + 1;
     return q;
   });
+  function isMock(q) { return q.kind === 'mock'; }
   var QMAP = {};
   QS.forEach(function (q) { QMAP[q.id] = q; });
   var KMAP = {};
@@ -24,8 +25,8 @@
 
   function chaptersOf(group) { return CH.filter(function (c) { return c.group === group; }); }
   function pointsOf(chapterId) { return KP.filter(function (k) { return k.chapter === chapterId; }); }
-  function questionsOfChapter(chapterId) { return QS.filter(function (q) { return q.topic === chapterId; }); }
-  function questionsOfGroup(group) { return QS.filter(function (q) { return q.group === group; }); }
+  function questionsOfChapter(chapterId) { return QS.filter(function (q) { return q.topic === chapterId && !isMock(q); }); }
+  function questionsOfGroup(group) { return QS.filter(function (q) { return q.group === group && !isMock(q); }); }
   function knowledgeOf(q) { return (q.knowledge || []).map(function (id) { return KMAP[id]; }).filter(Boolean); }
 
   /* ================= 状态 ================= */
@@ -122,8 +123,9 @@
 
   /* ================= 进度统计 ================= */
   function stats() {
-    var total = QS.length, attempted = 0, solved = 0, stuck = 0;
-    QS.forEach(function (q) {
+    var real = QS.filter(function (q) { return !isMock(q); });
+    var total = real.length, attempted = 0, solved = 0, stuck = 0;
+    real.forEach(function (q) {
       var a = attempt(q.id);
       if (a && a.status) attempted++;
       if (isSolved(a)) solved++;
@@ -143,9 +145,11 @@
 
   /* ================= 组件 ================= */
   function srcBadge(q) {
+    if (isMock(q)) return '<span class="badge src">方法模拟题</span>';
     return '<span class="badge src">第' + q.edition + '届' + (q.stage === '初赛' ? '初赛' : '决赛') + ' · ' + q.year + '</span>';
   }
   function typeBadge(q) {
+    if (isMock(q)) return '<span class="badge type">模拟</span>';
     return '<span class="badge type">' + (q.type === 'fill' ? '填空' : '解答') + '</span>';
   }
   function diffDots(n) {
@@ -406,7 +410,7 @@
         '<div class="stat"><b>' + s.stuck + '</b><span>待攻克</span></div>' +
         '<div class="stat"><b>' + s.pct + '%</b><span>总体完成度</span><div class="progress"><i style="width:' + s.pct + '%"></i></div></div>' +
         '</div>' +
-        '<div class="card" style="margin-top:14px"><b>方法手册：</b>按“同一个方法”聚合真题，每个方法给出适用信号、母题与推导骨架。<a href="#/methods">进入方法手册 →</a></div>' +
+        '<div class="card" style="margin-top:14px"><b>方法手册：</b>按“同一个方法”聚合真题，每个方法给出适用信号、母题与推导骨架，另配 ' + QS.filter(isMock).length + ' 道方法模拟题。<a href="#/methods">进入方法手册 →</a></div>' +
         '<h2 id="entry">两个入口</h2>' +
         '<div class="grid grid-2">' +
         '<a class="card card-link" href="#/nm"><h3>非数学类 · 高等数学主线</h3>' +
@@ -438,6 +442,7 @@
   function groupSummaryRows() {
     var map = {};
     QS.forEach(function (q) {
+      if (isMock(q)) return;
       var k = q.edition + '|' + q.year + '|' + q.stage + '|' + (q.group === 'nm' ? '非数学类' : '数学类');
       map[k] = (map[k] || 0) + 1;
     });
@@ -579,7 +584,11 @@
   function viewMethod(id) {
     var m = MMAP[id];
     if (!m) return viewNotFound('方法');
-    var qs = questionsOfMethod(m);
+    var qs = questionsOfMethod(m).sort(function (a, b) {
+      var ma = isMock(a) ? 0 : 1, mb = isMock(b) ? 0 : 1;
+      return ma === mb ? b.edition - a.edition : ma - mb;
+    });
+    var mocks = qs.filter(isMock).length;
     var html = pageHead(m.group === 'nm' ? 'NON-MATH · METHOD' : 'MATH · METHOD', m.title, m.signal,
       '<a href="#/home">首页</a> / <a href="#/methods">方法手册</a> / ' + esc(m.title));
     html += '<div class="kcard"><div class="k-label">适用信号</div><p>' + rich(m.signal) + '</p>' +
@@ -590,8 +599,8 @@
       ((m.pitfalls || []).length ? '<div class="k-section"><div class="k-label">易错点</div><ul class="pitfall-list">' +
         m.pitfalls.map(function (p) { return '<li>' + rich(p) + '</li>'; }).join('') + '</ul></div>' : '') +
       '</div>';
-    html += '<h2 id="related">同类真题（' + qs.length + '）</h2>';
-    html += qs.length ? qs.map(questionCard).join('') : '<div class="empty">这个方法的关联真题还在整理中，可先看其他方法。</div>';
+    html += '<h2 id="related">同类练习（真题 ' + (qs.length - mocks) + ' · 模拟 ' + mocks + '）</h2>';
+    html += qs.length ? qs.map(questionCard).join('') : '<div class="empty">这个方法的关联题目还在整理中，可先看其他方法。</div>';
     return { title: m.title, html: html };
   }
 
@@ -624,7 +633,7 @@
 
   function viewPapers() {
     var f = state.paperFilter || 'all';
-    var qs = QS.slice();
+    var qs = QS.filter(function (q) { return !isMock(q); });
     if (f === 'nm' || f === 'math') qs = qs.filter(function (q) { return q.group === f; });
     if (f === 'pre') qs = qs.filter(function (q) { return q.stage === '初赛'; });
     if (f === 'final') qs = qs.filter(function (q) { return q.stage === '决赛'; });
@@ -642,15 +651,66 @@
       return '<button class="chip ' + (f === c[0] ? 'on' : '') + '" data-act="paper-filter" data-val="' + c[0] + '">' + c[1] + '</button>';
     }).join('');
 
-    var html = pageHead('QUESTION BANK', '真题库', '按届次浏览收录的初赛与决赛真题；也可以按组别筛选后整卷练习。', '<a href="#/home">首页</a> / 真题库') +
+    var html = pageHead('QUESTION BANK', '真题库', '按届次浏览收录的初赛与决赛真题；点“进入整套模拟”可开计时、成套作答。', '<a href="#/home">首页</a> / 真题库') +
       '<div class="filter-bar">' + chips + '<span class="small muted">共 ' + qs.length + ' 题</span></div>';
     html += keys.map(function (key) {
       var g = groups[key], p = key.split('|');
+      var stIdx = g[0].stage === '初赛' ? 0 : 1;
+      var seen = {}, links = [];
+      g.forEach(function (q) {
+        if (seen[q.group]) return;
+        seen[q.group] = 1;
+        links.push('<a href="#/paper/' + q.group + '/' + q.edition + '/' + stIdx + '">' + (q.group === 'nm' ? '非数学类' : '数学类') + '整套模拟 →</a>');
+      });
       return '<h2 id="e' + p[0] + p[2] + '">第 ' + p[0] + ' 届 · ' + p[1] + ' 年 · ' + p[2] + '</h2>' +
-        '<p class="small muted">' + g.length + ' 题 · 建议限时 ' + (g.some(function (q) { return q.group === 'math'; }) ? '150' : '90') + ' 分钟完成本节，再统一看解析。</p>' +
+        '<p class="small muted">' + g.length + ' 题 · 建议限时 ' + (g.some(function (q) { return q.group === 'math'; }) ? '150' : '90') + ' 分钟完成本节，再统一看解析。 ' +
+        links.join(' · ') + '</p>' +
         g.map(questionCard).join('');
     }).join('') || '<div class="empty">当前筛选下没有题目。</div>';
     return { title: '真题库', html: html };
+  }
+
+  var paperTimer = null, paperSeconds = 150 * 60, paperRunning = false, paperKey = '';
+  function fmtClock(s) {
+    var m = Math.floor(s / 60), x = s % 60;
+    return (m < 10 ? '0' : '') + m + ':' + (x < 10 ? '0' : '') + x;
+  }
+  function stopPaperTimer() {
+    if (paperTimer) { clearInterval(paperTimer); paperTimer = null; }
+    paperRunning = false;
+  }
+  function paperQuestions() {
+    var seg = parseHash();
+    if (seg[0] !== 'paper') return [];
+    var stage = Number(seg[3]) ? '决赛' : '初赛';
+    return QS.filter(function (q) {
+      return !isMock(q) && q.group === seg[1] && q.edition === Number(seg[2]) && q.stage === stage;
+    });
+  }
+  function viewPaper(group, ed, stIdx) {
+    var key = group + '-' + ed + '-' + stIdx;
+    if (key !== paperKey) { paperKey = key; stopPaperTimer(); paperSeconds = 150 * 60; }
+    var stage = Number(stIdx) ? '决赛' : '初赛';
+    var qs = QS.filter(function (q) {
+      return !isMock(q) && q.group === group && q.edition === Number(ed) && q.stage === stage;
+    });
+    if (!qs.length) return viewNotFound('试卷');
+    var total = qs.reduce(function (s, q) { return s + q.score; }, 0);
+    var answered = qs.filter(function (q) { return !!attempt(q.id); }).length;
+    var html = pageHead('MOCK EXAM', '第 ' + ed + ' 届 · ' + stage + ' · ' + (group === 'nm' ? '非数学类' : '数学类'),
+      '满分 ' + total + ' 分 · 建议 150 分钟 · 共 ' + qs.length + ' 题。先按考场节奏做完，再逐题看解析。',
+      '<a href="#/home">首页</a> / <a href="#/papers">真题库</a> / 第' + ed + '届' + stage) +
+      '<div class="card" style="position:sticky;top:calc(var(--header-h) + 8px);z-index:20;border-color:var(--md-primary)">' +
+      '<div class="btn-row"><b>模拟计时</b>' +
+      '<span id="paper-clock" style="font-family:var(--mono);font-size:20px;color:var(--md-primary)">' + fmtClock(paperSeconds) + '</span>' +
+      '<button class="btn sm" data-act="paper-start">开始</button>' +
+      '<button class="btn ghost sm" data-act="paper-pause">暂停</button>' +
+      '<button class="btn ghost sm" data-act="paper-reset">重置</button>' +
+      '<span class="spacer"></span><button class="btn sm" data-act="paper-submit">交卷统计</button></div>' +
+      '<div class="small muted" style="margin-top:6px">已作答 <span id="paper-done">' + answered + '</span> / ' + qs.length + ' 题。计时只在本页生效，离开会自动停止。</div>' +
+      '<div id="paper-result"></div></div>' +
+      qs.map(questionCard).join('');
+    return { title: '第' + ed + '届' + stage + '模拟', html: html };
   }
 
   function viewWrong() {
@@ -771,11 +831,13 @@
 
   function route(scroll) {
     var seg = parseHash();
+    if (seg[0] !== 'paper') stopPaperTimer();
     var view;
     if (!seg.length || seg[0] === 'home') view = viewHome();
     else if (seg[0] === 'guide') view = viewGuide();
     else if (seg[0] === 'nm' || seg[0] === 'math') view = seg[1] ? viewChapter(seg[0], seg[1]) : viewMap(seg[0]);
     else if (seg[0] === 'papers') view = viewPapers();
+    else if (seg[0] === 'paper') view = viewPaper(seg[1], seg[2], seg[3] || 0);
     else if (seg[0] === 'methods') view = seg[1] ? viewMethod(seg[1]) : viewMethods();
     else if (seg[0] === 'wrong') view = viewWrong();
     else if (seg[0] === 'report') view = viewReport();
@@ -888,6 +950,51 @@
     if (act === 'method-filter') {
       state.methodFilter = btn.getAttribute('data-val');
       route(false);
+      return;
+    }
+    if (act === 'paper-start') {
+      if (paperRunning) return;
+      if (paperSeconds <= 0) paperSeconds = 150 * 60;
+      paperRunning = true;
+      paperTimer = setInterval(function () {
+        if (paperSeconds > 0) paperSeconds--;
+        var el = document.getElementById('paper-clock');
+        if (el) el.textContent = fmtClock(paperSeconds);
+        if (paperSeconds <= 0) { stopPaperTimer(); toast('时间到，建议交卷'); }
+      }, 1000);
+      toast('计时开始，祝你顺利');
+      return;
+    }
+    if (act === 'paper-pause') {
+      stopPaperTimer();
+      toast('已暂停');
+      return;
+    }
+    if (act === 'paper-reset') {
+      stopPaperTimer();
+      paperSeconds = 150 * 60;
+      var c = document.getElementById('paper-clock');
+      if (c) c.textContent = fmtClock(paperSeconds);
+      toast('计时已重置');
+      return;
+    }
+    if (act === 'paper-submit') {
+      stopPaperTimer();
+      var pq = paperQuestions();
+      var done = 0, correct = 0, wrong = 0;
+      pq.forEach(function (q) {
+        var a = attempt(q.id);
+        if (!a || !a.status) return;
+        done++;
+        if (isSolved(a)) correct++; else wrong++;
+      });
+      var box = document.getElementById('paper-result');
+      if (box) {
+        box.innerHTML = '<div class="fb ok" style="margin-top:8px"><span>✓</span><div><b>交卷统计：</b>已答 ' + done + ' / ' + pq.length +
+          ' 题；判定正确 ' + correct + ' 题，待复盘 ' + wrong + ' 题，未作答 ' + (pq.length - done) + ' 题。' +
+          '<br><span class="small">建议先按“待复盘 + 未作答”回看解析，把卡点写进错题本。</span></div></div>';
+      }
+      toast('已交卷，统计见上方');
       return;
     }
     if (act === 'provider') {
@@ -1036,6 +1143,8 @@
     card.replaceWith(next);
     if (aiBox) next.querySelector('.qfoot').insertAdjacentElement('beforebegin', aiBox);
     renderMath(next);
+    var pd = document.getElementById('paper-done');
+    if (pd) pd.textContent = paperQuestions().filter(function (q) { return !!attempt(q.id); }).length;
   }
 
   document.body.addEventListener('change', function (e) {
