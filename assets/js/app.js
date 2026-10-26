@@ -416,7 +416,7 @@
         '<div class="grid grid-3">' +
         '<div class="card"><h3>① 先做题，再看解析</h3><p class="muted">填空题直接输入答案；解答题写下思路（哪怕只写“卡在第二步”）。解析默认收起。</p></div>' +
         '<div class="card"><h3>② 卡壳时分层诊断</h3><p class="muted">每道题提交后会给出“知识层 / 真题层”两份诊断：先补知识点，再看这道题的入口。</p></div>' +
-        '<div class="card"><h3>③ 让 AI 对准你的思路</h3><p class="muted">把卡点交给 AI，它会指出卡点类型（概念 / 方法 / 计算 / 证明 / 审题）并给出提示阶梯。</p></div>' +
+        '<div class="card"><h3>③ 让 AI 对准你的思路</h3><p class="muted">把卡点交给 DeepSeek（默认，可填 Key）或内置免费智能体，它会指出卡点类型（概念 / 方法 / 计算 / 证明 / 审题）并给出提示阶梯。</p></div>' +
         '</div>' +
         '<div class="grid grid-3" style="margin-top:14px">' +
         '<div class="card"><h3>④ 收进错题本</h3><p class="muted">自评“卡住 / 不会”自动进入错题本，按章节复盘。</p></div>' +
@@ -424,7 +424,7 @@
         '<div class="card"><h3>⑥ 按路线推进</h3><p class="muted"><a href="#/guide">五周备考路线</a>：先补基础，再刷真题，最后限时模拟。</p></div>' +
         '</div>' +
         '<h2 id="scope">收录范围与来源</h2>' +
-        '<p class="muted">当前收录第 16 届（2024）初赛、第 14 届（2023）决赛、第 13 届（2021）初赛、第 11 届（2019）初赛、第 6 届（2014）初赛、第 2 届（2010）初赛的代表性真题；题干与参考解答整理自 cmathc.cn 公开试卷，解析按“可复述的步骤”重写。题库持续扩充中。</p>' +
+        '<p class="muted">当前收录第 16 届（2024）初赛、第 14 届（2023）决赛、第 13 届（2021）初赛、第 12 届（2020 初赛 / 2021 决赛）、第 11 届（2019）初赛、第 10 届（2018）初赛、第 6 届（2014）初赛、第 2 届（2010）初赛的真题；题干与参考解答整理自 cmathc.cn 公开试卷，解析按“可复述的步骤”重写。题库持续扩充中。</p>' +
         '<div class="table-wrap"><table><thead><tr><th>届次</th><th>年份</th><th>阶段</th><th>组别</th><th>题量</th></tr></thead><tbody>' +
         groupSummaryRows() +
         '</tbody></table></div>'
@@ -532,9 +532,17 @@
     return QS.filter(function (q) { return (q.knowledge || []).indexOf(kid) >= 0; });
   }
 
+  function viewNotFound(what) {
+    return {
+      title: '未找到',
+      html: pageHead('404', '未找到该' + what, '链接可能已失效，或题库尚未收录这一条。', '<a href="#/home">首页</a>') +
+        '<div class="empty">可以回到 <a href="#/papers">真题库</a> 按届次浏览，或从 <a href="#/home">首页</a> 重新进入。</div>'
+    };
+  }
+
   function viewKnowledge(kid) {
     var k = KMAP[kid];
-    if (!k) return viewHome();
+    if (!k) return viewNotFound('知识点');
     var c = CHMAP[k.chapter];
     var qs = relatedQuestions(kid);
     return {
@@ -643,18 +651,19 @@
     var s = window.CMC_AI.settings();
     return {
       title: '设置',
-      html: pageHead('SETTINGS', '设置', 'AI 分析默认使用内置免费智能体，无需 Key；也可以换成自己的接口。', '<a href="#/home">首页</a> / 设置') +
+      html: pageHead('SETTINGS', '设置', 'AI 分析默认使用 DeepSeek（需要填 API Key），未配置时自动降级到内置免费智能体。', '<a href="#/home">首页</a> / 设置') +
         '<h2 id="ai">AI 分析</h2>' +
         '<div class="card">' +
         '<div class="k-section"><div class="k-label">提供方</div>' +
         '<div class="self-check" id="provider-pick">' +
+        '<button data-act="provider" data-val="deepseek" class="' + (s.provider === 'deepseek' ? 'on' : '') + '">DeepSeek（默认）</button>' +
         '<button data-act="provider" data-val="builtin" class="' + (s.provider === 'builtin' ? 'on' : '') + '">内置免费智能体</button>' +
-        '<button data-act="provider" data-val="custom" class="' + (s.provider === 'custom' ? 'on' : '') + '">自定义 OpenAI 兼容接口</button>' +
+        '<button data-act="provider" data-val="custom" class="' + (s.provider === 'custom' ? 'on' : '') + '">自定义兼容接口</button>' +
         '</div>' +
-        '<p class="small muted">内置智能体依次尝试 ' + window.CMC_AI.builtinNames.join(' / ') + '，失败自动切换；都不通时会展示本地诊断。</p>' +
+        '<p class="small muted">DeepSeek 需要 API Key，只保存在本机浏览器；未填写 Key 时会自动降级到内置免费智能体（' + window.CMC_AI.builtinNames.join(' / ') + '）。模型可选 <code>deepseek-chat</code>（通用）或 <code>deepseek-reasoner</code>（推理）。</p>' +
         '</div>' +
-        '<div id="custom-fields" style="' + (s.provider === 'custom' ? '' : 'display:none') + '">' +
-        '<div class="k-section"><div class="k-label">接口地址（完整 URL）</div>' +
+        '<div id="custom-fields" style="' + (s.provider === 'builtin' ? 'display:none' : '') + '">' +
+        '<div class="k-section"><div class="k-label">接口地址（DeepSeek 已预填）</div>' +
         '<input class="select" id="ai-base" style="width:100%;height:36px" placeholder="https://api.deepseek.com/v1/chat/completions" value="' + esc(s.baseUrl) + '"></div>' +
         '<div class="k-section"><div class="k-label">模型名</div>' +
         '<input class="select" id="ai-model" style="width:100%;height:36px" placeholder="deepseek-chat" value="' + esc(s.model) + '"></div>' +
@@ -677,7 +686,7 @@
 
   function viewQuestion(qid) {
     var q = QMAP[qid];
-    if (!q) return viewHome();
+    if (!q) return viewNotFound('题目');
     var c = CHMAP[q.topic];
     return {
       title: 'Q' + q.no,
@@ -812,10 +821,17 @@
       return;
     }
     if (act === 'provider') {
+      var pv = btn.getAttribute('data-val');
       document.querySelectorAll('#provider-pick button').forEach(function (b) { b.classList.remove('on'); });
       btn.classList.add('on');
-      document.getElementById('custom-fields').style.display = btn.getAttribute('data-val') === 'custom' ? '' : 'none';
-      window.CMC_AI.save({ provider: btn.getAttribute('data-val') });
+      document.getElementById('custom-fields').style.display = pv === 'builtin' ? 'none' : '';
+      var baseEl = document.getElementById('ai-base');
+      var modelEl = document.getElementById('ai-model');
+      if (pv === 'deepseek') {
+        if (baseEl && !baseEl.value) baseEl.value = 'https://api.deepseek.com/v1/chat/completions';
+        if (modelEl && !modelEl.value) modelEl.value = 'deepseek-chat';
+      }
+      window.CMC_AI.save({ provider: pv });
       return;
     }
     if (act === 'save-ai') {

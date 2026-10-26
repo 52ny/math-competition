@@ -27,8 +27,8 @@ window.CMC_QUESTIONS_MATH = [
     answer: `$@varphi(1)=@dfrac{@pi^2}{12}$，$@varphi(2)=@dfrac{@pi^2}{8}$`,
     accept: ['π^2/12 和 π^2/8'],
     solution: [
-      `先证内闭一致收敛（用 $@ln(1+t)@le C@sqrt t$），故 $@varphi$ 连续。对 $s>0$ 在积分号下求导：$$@varphi'(s)=@int_0^{+@infty}@frac{x}{(1+x^2)(1+sx^2)}dx=\\frac{1}{1-s}@int_0^{+@infty}@left(@frac{x}{1+x^2}-@frac{sx}{1+sx^2}@right)dx.$$`,
-      `计算得 $$@varphi'(s)=@frac{1}{2(1-s)}@ln@frac{1+x^2}{1+sx^2}@Bigg|_0^{+@infty}=-@frac{@ln s}{2(1-s)}.$$`,
+      `先证内闭一致收敛（用 $@ln(1+t)@le C@sqrt t$），故 $@varphi$ 连续。对 $s>0$ 在积分号下求导：$$@varphi\'(s)=@int_0^{+@infty}@frac{x}{(1+x^2)(1+sx^2)}dx=\\frac{1}{1-s}@int_0^{+@infty}@left(@frac{x}{1+x^2}-@frac{sx}{1+sx^2}@right)dx.$$`,
+      `计算得 $$@varphi\'(s)=@frac{1}{2(1-s)}@ln@frac{1+x^2}{1+sx^2}@Bigg|_0^{+@infty}=-@frac{@ln s}{2(1-s)}.$$`,
       `由 $@varphi(0)=0$：$$@varphi(1)=-@int_0^1@frac{@ln s}{2(1-s)}ds=-@int_0^1@frac{@ln(1-s)}{2s}ds=@sum_{n=1}^{@infty}@frac{1}{2n^2}=@frac{@pi^2}{12}.$$`,
       `同理 $$@varphi(2)=-@int_0^2@frac{@ln s}{2(1-s)}ds=-@int_{-1}^{1}@frac{@ln(1-s)}{2s}ds=@sum_{n=0}^{@infty}@frac{1}{(2n+1)^2}=@frac{@pi^2}{8}.$$`
     ],
@@ -95,10 +95,10 @@ window.CMC_QUESTIONS_MATH = [
     answer: `(1) 极限恒为 3；(2) 结论仍成立，极限恒为 0`,
     accept: [],
     solution: [
-      `(1) $f_1'=@frac12$，$f_2'=@frac13$，故两者都是压缩映射，压缩比 $@le@frac12$，且共同不动点为 $t=3$。`,
+      `(1) $f_1\'=@frac12$，$f_2\'=@frac13$，故两者都是压缩映射，压缩比 $@le@frac12$，且共同不动点为 $t=3$。`,
       `于是 $$|F_k(x)-3|@le@frac{1}{2}|f_{n_2}@circ@cdots@circ f_{n_k}(x)-3|@le@cdots@le@frac{1}{2^k}|x-3|@to0.$$`,
-      `(2) $f_1'=@frac{t^2}{1+t^2}$，$f_2'=@frac{1-t^2}{1+t^2}$，均满足 $|f_i'|@le1$，且 $|f_i'|=1$ 只在 $t=0$。共同不动点为 $0$，且 $|f_i(t)|@le|t|$。`,
-      `若 $F_k(x)@nrightarrow0$，则存在子列满足 $0<@delta@le|F_{m_k}(x)|@le|x|$。在有界闭集 $@left@{@delta/2@le|t|@le|x|@right@}$ 上 $|f_i'|@le@ell<1$，用中值定理得每步至少压缩 $@ell$，矛盾。故极限为 0。`
+      `(2) $f_1\'=@frac{t^2}{1+t^2}$，$f_2\'=@frac{1-t^2}{1+t^2}$，均满足 $|f_i\'|@le1$，且 $|f_i\'|=1$ 只在 $t=0$。共同不动点为 $0$，且 $|f_i(t)|@le|t|$。`,
+      `若 $F_k(x)@nrightarrow0$，则存在子列满足 $0<@delta@le|F_{m_k}(x)|@le|x|$。在有界闭集 $@left@{@delta/2@le|t|@le|x|@right@}$ 上 $|f_i\'|@le@ell<1$，用中值定理得每步至少压缩 $@ell$，矛盾。故极限为 0。`
     ],
     hints: ['(1) 先算导数，发现两个函数都是压缩映射，且不动点都是 3。', '(2) 导数绝对值不大于 1，但只在 0 处取到 1，不能直接用统一压缩比。', '反证 + 子列 + 在“远离 0”的紧集上获得一致的压缩比 $@ell<1$。'],
     pitfalls: ['(1) 只说“压缩映射”不写压缩比和不动点。', '(2) 误以为 $|f\'(0)|=1$ 就一定不收敛。'],
@@ -127,13 +127,13 @@ window.CMC_QUESTIONS_MATH = [
   {
     id: 'm2019-2', group: 'math', edition: 11, year: 2019, stage: '初赛', paper: '数学类 A 卷',
     topic: 'analysis-calculus', type: 'solution', score: 15, difficulty: 5,
-    stem: `设 $@alpha>0$，$f(x)$ 在 $[0,1]$ 上非负、有二阶导函数，$f(0)=0$，且在 $[0,1]$ 上不恒为零。证明：存在 $@xi@in(0,1)$，使得 $$@xi f''(@xi)+(@alpha+1)f'(@xi)>@alpha f(@xi).$$`,
+    stem: `设 $@alpha>0$，$f(x)$ 在 $[0,1]$ 上非负、有二阶导函数，$f(0)=0$，且在 $[0,1]$ 上不恒为零。证明：存在 $@xi@in(0,1)$，使得 $$@xi f\'\'(@xi)+(@alpha+1)f\'(@xi)>@alpha f(@xi).$$`,
     answer: `见解析（反证 + 两次积分 + $e^{-x}g$ 单调）`,
     accept: [],
     solution: [
-      `反证：若对一切 $x@in[0,1]$ 有 $xf''+(@alpha+1)f'@le@alpha f$，则函数 $$h(x)=xf'(x)+@alpha f(x)-@alpha@int_0^x f(u)du$$ 满足 $h'@le0$，且 $h(0)=0$，故 $h@le0$，即 $$xf'(x)+@alpha f(x)@le@alpha@int_0^xf(u)du.$$`,
-      `两边乘 $x^{@alpha-1}$：$(x^{@alpha}f(x))'@le@alpha x^{@alpha-1}@int_0^xf(u)du$。在 $[0,x]$ 上积分：$$x^{@alpha}f(x)@le@alpha@int_0^xt^{@alpha-1}@left(@int_0^tf(u)du@right)dt@le x^{@alpha}@int_0^xf(u)du,$$ 即 $f(x)@le@int_0^xf(u)du$。`,
-      `令 $g(x)=@int_0^xf$，则 $g'@le g$，即 $(e^{-x}g)'@le0$。由 $g(0)=0$ 得 $g@le0$；但 $f@ge0$ 给出 $g@ge0$，故 $g@equiv0$，$f@equiv0$，与 $f$ 不恒为零矛盾。`
+      `反证：若对一切 $x@in[0,1]$ 有 $xf\'\'+(@alpha+1)f\'@le@alpha f$，则函数 $$h(x)=xf\'(x)+@alpha f(x)-@alpha@int_0^x f(u)du$$ 满足 $h\'@le0$，且 $h(0)=0$，故 $h@le0$，即 $$xf\'(x)+@alpha f(x)@le@alpha@int_0^xf(u)du.$$`,
+      `两边乘 $x^{@alpha-1}$：$(x^{@alpha}f(x))\'@le@alpha x^{@alpha-1}@int_0^xf(u)du$。在 $[0,x]$ 上积分：$$x^{@alpha}f(x)@le@alpha@int_0^xt^{@alpha-1}@left(@int_0^tf(u)du@right)dt@le x^{@alpha}@int_0^xf(u)du,$$ 即 $f(x)@le@int_0^xf(u)du$。`,
+      `令 $g(x)=@int_0^xf$，则 $g\'@le g$，即 $(e^{-x}g)\'@le0$。由 $g(0)=0$ 得 $g@le0$；但 $f@ge0$ 给出 $g@ge0$，故 $g@equiv0$，$f@equiv0$，与 $f$ 不恒为零矛盾。`
     ],
     hints: ['结论是“存在 $@xi$ 使 $>$”，反证最自然：假设恒 $@le$。', '把 $xf\'\'+(@alpha+1)f\'-@alpha f$ 看成某个函数的导数，乘以 $x^{@alpha}$ 更容易凑。', '最后化到 $f@le@int_0^x f$，再用 $e^{-x}g$ 的单调性逼出 $f@equiv0$。'],
     pitfalls: ['反证时假设“对所有 $x$ 都 $@le$”写成了“存在 $x$ 使 $@le$”。', '积分时漏掉 $x^{@alpha}$ 因子导致无法消去。'],

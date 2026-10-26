@@ -178,6 +178,42 @@ window.CMC_KNOWLEDGE = {
       pitfalls: ['只证单调不证有界；或只在极限存在的前提下求极限。', '取错根（忽略数列取值范围）。']
     },
     {
+      id: 'k-higher-derivative', group: 'nm', chapter: 'derivative',
+      title: '高阶导数与莱布尼茨公式',
+      summary: '求 $f^{(n)}$ 在一点的值，优先把函数写成“多项式 × 指数/三角”，再用莱布尼茨公式只保留非零项。',
+      points: [
+        '莱布尼茨公式：$(uv)^{(n)}=@sum_{k=0}^{n}C_n^k u^{(k)}v^{(n-k)}$。',
+        '若 $u=(x-a)^n$，则在 $x=a$ 处只有 $k=n$ 的项非零，计算量骤减。',
+        '$e^{-x^2}$ 在 $x=-1$ 处的各阶导数可通过“$u=(x+1)^n$ 的因子”筛选。',
+        '常用：$(e^{ax})^{(n)}=a^ne^{ax}$，$(@sin ax)^{(n)}=a^n@sin(ax+@frac{n@pi}{2})$。'
+      ],
+      pitfalls: ['直接把 $n$ 阶导数当成 $n$ 次幂求导。', '莱布尼茨展开后没有代入特殊点化简。']
+    },
+    {
+      id: 'k-triple-integral', group: 'nm', chapter: 'multiple-integral',
+      title: '三重积分与球坐标',
+      summary: '球域、球壳、空心球优先球坐标；被积函数只含 $x^2+y^2$ 时柱坐标也很快。',
+      points: [
+        '球坐标：$dV=@rho^2@sin@varphi@,d@rho@,d@varphi@,d@theta$。',
+        '球心不在原点时先平移，例如 $x^2+y^2+(z-1)^2@le9$ 令 $z-1=@rho@cos@varphi$。',
+        '空心立体用“大减小”，注意被挖去的部分是否跨过坐标平面。',
+        '轮换对称：球内 $@iiint x^2dV=@iiint y^2dV=@iiint z^2dV=@frac13@iiint@rho^2dV$。'
+      ],
+      pitfalls: ['球坐标漏写 $@rho^2@sin@varphi$。', '球心平移后仍按原点写积分限。']
+    },
+    {
+      id: 'k-matrix', group: 'nm', chapter: 'geometry-linear',
+      title: '矩阵运算与伴随矩阵',
+      summary: '$AA^*=|A|I$ 是处理伴随矩阵的万能钥匙；矩阵方程先化成 $B$ 的一次方程再解。',
+      points: [
+        '$AA^*=A^*A=|A|I$；$|A^*|=|A|^{n-1}$（$n$ 阶）。',
+        '解 $ABA^{-1}=BA^{-1}+3I$ 这类方程：两边左乘 $A^{-1}$、右乘 $A$，整理成 $(I-A^{-1})B=3I$。',
+        '实对称矩阵可正交对角化，$B=QD^{1/2021}Q^T$ 是“矩阵开方”的标准构造。',
+        '多项式插值：在互异特征值上指定取值，可构造 $p(A)=B$。'
+      ],
+      pitfalls: ['把 $A^*$ 与 $A^{-1}$ 混用（$A^*=|A|A^{-1}$）。', '矩阵方程两边乘错顺序（矩阵不可交换）。']
+    },
+    {
       id: 'k-int-techniques', group: 'nm', chapter: 'integral',
       title: '换元、分部与有理函数积分',
       summary: '一元积分的三条主线：三角/根式换元、分部积分降次、有理分式拆项。',

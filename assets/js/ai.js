@@ -8,14 +8,15 @@
     { name: 'llm7.io', url: 'https://api.llm7.io/v1/chat/completions', model: 'gpt-oss:20b' },
     { name: 'Pollinations', url: 'https://text.pollinations.ai/openai', model: 'openai' }
   ];
+  var DEEPSEEK_URL = 'https://api.deepseek.com/v1/chat/completions';
 
   function settings() {
     var s = {};
     try { s = JSON.parse(localStorage.getItem('cmc.ai.v1') || '{}'); } catch (e) { s = {}; }
     return {
-      provider: s.provider || 'builtin',
-      baseUrl: s.baseUrl || '',
-      model: s.model || '',
+      provider: s.provider || 'deepseek',
+      baseUrl: s.baseUrl || DEEPSEEK_URL,
+      model: s.model || 'deepseek-chat',
       key: s.key || ''
     };
   }
@@ -72,6 +73,13 @@
 
   function endpoints() {
     var s = settings();
+    if (s.provider === 'deepseek') {
+      if (s.key) {
+        return [{ name: 'DeepSeek', url: s.baseUrl || DEEPSEEK_URL, model: s.model || 'deepseek-chat', key: s.key }];
+      }
+      // 还没填 Key 时先保证开箱可用，自动走内置免费智能体
+      return BUILTIN;
+    }
     if (s.provider === 'custom') {
       if (!s.baseUrl) throw new Error('还没有填写接口地址，请到「设置」里配置。');
       if (!s.key) throw new Error('还没有填写 API Key，请到「设置」里配置。');
